@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcj.manage.dao.RightMapper" >
+  <resultMap id="BaseResultMap" type="com.lcj.manage.model.Right" >
+    <id column="qid" property="id" jdbcType="INTEGER" />
+    <result column="qname" property="q_name" jdbcType="VARCHAR" />
+    <result column="qdescription" property="q_description" jdbcType="VARCHAR" />
+    <result column="r_code" property="r_code" jdbcType="INTEGER" />
+    </resultMap>
+
+  <insert id="insertRight" parameterType="com.lcj.manage.model.Right" >
+    insert into u_right (qid, qname, qdescription
+    )
+    values (#{id},#{q_name},#{q_description}
+    )
+  </insert>
+
+  <select id="selectAllRight" resultMap="BaseResultMap">
+    select * from u_right where r_code=1
+  </select>
+
+  <update id="delRight" parameterType="com.lcj.manage.model.Right">
+    update u_right set r_code=0 where qid = #{id}
+  </update>
+
+  <update id="updateRightById" parameterType="com.lcj.manage.model.Right">
+    update u_right set qname=#{q_name},qdescription=#{q_description}
+    where qid = #{id}
+  </update>
+</mapper>

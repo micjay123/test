@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcj.manage.dao.LeaveMapper" >
+  <resultMap id="BaseResultMap" type="com.lcj.manage.model.Leave" >
+    <id column="lid" property="l_id" jdbcType="INTEGER" />
+    <result column="uid" property="u_id" jdbcType="INTEGER" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="ldescription" property="description" jdbcType="VARCHAR" />
+    <result column="leavedate" property="leave_date" jdbcType="TIMESTAMP" />
+    </resultMap>
+  <resultMap id="queryLeaveByUser" type="com.lcj.manage.model.Leave">
+    <id column="lid" property="l_id" jdbcType="INTEGER" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="ldescription" property="description" jdbcType="VARCHAR" />
+    <result column="leavedate" property="leave_date" jdbcType="TIMESTAMP" />
+    <collection property="user" ofType="com.lcj.manage.model.User">
+      <id column="id" property="id" jdbcType="INTEGER"/>
+      <result column="name" property="name" jdbcType="VARCHAR"/>
+      <result column="phonenum" property="phone_number" jdbcType="VARCHAR"/>
+    </collection>
+  </resultMap>
+
+  <insert id="addLeave" parameterType="com.lcj.manage.model.Leave" >
+    insert into user_leave(uid,reason,ldescription,leavedate)
+    values (#{u_id},#{reason},#{description},now())
+  </insert>
+  <select id="selectUserLeave" resultMap="queryLeaveByUser">
+        select user.name,user.phonenum,user_leave.reason,ldescription,leavedate from user,user_leave
+         where user.id=user_leave.uid
+  </select>
+</mapper>

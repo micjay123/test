@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcj.manage.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.lcj.manage.model.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="phonenum" property="phone_number" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="rid" property="r_id" jdbcType="INTEGER" />
+    <result column="sid" property="s_id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="queryForUserInState" type="com.lcj.manage.model.User">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="sex" property="sex" jdbcType="VARCHAR"/>
+    <result column="phonenum" property="phone_number" jdbcType="VARCHAR"/>
+    <collection property="state" ofType="com.lcj.manage.model.State">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="statename" property="s_name" jdbcType="VARCHAR" />
+      <result column="s_description" property="s_description" jdbcType="VARCHAR" />
+      <result column="uid" property="u_id" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+
+  <resultMap id="queryUserRoleAndRight" type="com.lcj.manage.model.User">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="sex" property="sex" jdbcType="VARCHAR"/>
+    <result column="phonenum" property="phone_number" jdbcType="VARCHAR" />
+      <collection property="role" ofType="com.lcj.manage.model.Role">
+        <id column="rid" property="id" jdbcType="INTEGER" />
+        <result column="rolename" property="r_name" jdbcType="VARCHAR" />
+      </collection>
+    <collection property="right" ofType="com.lcj.manage.model.Right">
+      <id column="qid" property="id" jdbcType="INTEGER" />
+      <result column="qname" property="q_name" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  <select id="selectRole" resultType="String" parameterType="INTEGER">
+    seelect rolename from
+  </select>
+  <select id="verifyUser" resultMap="BaseResultMap" parameterType="com.lcj.manage.model.User" >
+    select
+    *
+    from user
+    WHERE username=#{username} and password=#{password}
+  </select>
+
+  <select id="queryUserByCode" resultMap="BaseResultMap">
+    select * from user where code = 0;
+  </select>
+  <update id="updateUserCodeById" parameterType="INTEGER">
+    update user set code = 1 where id=#{id}
+  </update>
+  <select id="checkPass" resultType="com.lcj.manage.model.User" parameterType="com.lcj.manage.model.User" >
+    select
+    *
+    from user
+    WHERE username=#{username}
+  </select>
+
+  <insert id="insertUser" parameterType="com.lcj.manage.model.User" >
+    insert into user (name, sex,phonenum,password,username
+    )
+    values (#{name},#{sex},#{phone_number},#{password},#{username}
+    )
+  </insert>
+
+  <update id="modifyPassword" parameterType="com.lcj.manage.model.User">
+    UPDATE user SET password = #{password} WHERE username = #{username}
+  </update>
+
+  <select id="selectAllUserWithState" resultMap="queryForUserInState">
+    select
+    name,sex,phonenum,statename,s_description,uid
+    from user,state
+    where state.uid=user.id and state.code = 1;
+  </select>
+
+  <update id="deleteUserStateById" parameterType="com.lcj.manage.model.State">
+    update state set code = 0 where uid = #{u_id};
+  </update>
+
+  <update id="updateStateById" parameterType="com.lcj.manage.model.State">
+    update state set statename=#{s_name},s_description=#{s_description} where uid = #{u_id}
+  </update>
+
+  <insert id="initUserState" parameterType="com.lcj.manage.model.State">
+    insert  into state (uid,statename,s_description) value (#{u_id},#{s_name},#{s_description})
+  </insert>
+
+  <update id="sectorDismiss" parameterType="com.lcj.manage.model.User">
+    update user set sid = 404 where id=#{id}
+  </update>
+
+  <select id="selectNameBySid" resultMap="BaseResultMap">
+    select * from user where sid=404
+  </select>
+
+  <update id="addUser2Sector" parameterType="com.lcj.manage.model.User">
+    update user set sid=#{s_id} where id=#{id}
+  </update>
+  <select id="selectUserRoleAndRight" resultMap="queryUserRoleAndRight">
+    select user.id,user.name,sex,phonenum,role.rolename,u_right.qname
+    from user,role,u_right where user.rid=role.rid and role.qid=u_right.qid
+  </select>
+  <update id="editUserRole" parameterType="com.lcj.manage.model.User">
+    update user set rid=#{r_id} where id = #{id}
+  </update>
+  <select id="selectUser" resultType="com.lcj.manage.model.User" parameterType="com.lcj.manage.model.User">
+    select * from user where password=#{password} and username=#{username}
+  </select>
+
+  <select id="selectUserBySex" resultType="com.lcj.manage.model.User" >
+            select sex ,count(sex) amount from user where code=1
+            group by sex
+  </select>
+</mapper>

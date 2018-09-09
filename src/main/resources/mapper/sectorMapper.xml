@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcj.manage.dao.SectorMapper" >
+  <resultMap id="BaseResultMap" type="com.lcj.manage.model.Sector" >
+    <id column="sid" property="id" jdbcType="INTEGER" />
+    <result column="sectorname" property="sectorName" jdbcType="VARCHAR" />
+    <result column="sdescription" property="s_description" jdbcType="VARCHAR" />
+    <result column="s_code" property="s_code" jdbcType="INTEGER" />
+    </resultMap>
+
+  <resultMap id="queryUser2Sector" type="com.lcj.manage.model.Sector" >
+    <id column="sid" property="id" jdbcType="INTEGER" />
+    <result column="sectorname" property="sectorName" jdbcType="VARCHAR" />
+    <result column="sdescription" property="s_description" jdbcType="VARCHAR" />
+    <result column="s_code" property="s_code" jdbcType="INTEGER" />
+    <collection property="user" ofType="com.lcj.manage.model.User">
+      <id column="id" property="id" jdbcType="INTEGER" />
+      <result column="name" property="name" jdbcType="VARCHAR"/>
+      <result column="sex" property="sex" jdbcType="VARCHAR"/>
+      <result column="phonenum" property="phone_number" jdbcType="VARCHAR"/>
+      <result column="sid" property="s_id" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+
+  <insert id="insertSector" parameterType="com.lcj.manage.model.Sector" >
+    insert into sector (sid, sectorname, sdescription
+    )
+    values (#{id},#{sectorName},#{s_description}
+    )
+  </insert>
+
+  <select id="selectAllSector" resultMap="BaseResultMap">
+    select * from sector where s_code=1
+  </select>
+
+  <update id="delSector" parameterType="com.lcj.manage.model.Sector">
+    update sector set s_code=0 where sid = #{id}
+  </update>
+
+  <update id="updateSectorById" parameterType="com.lcj.manage.model.Sector">
+    update sector set sectorname=#{sectorName},sdescription=#{s_description}
+    where sid = #{id}
+  </update>
+
+  <select id="selectUserWithSector" resultMap="queryUser2Sector">
+    select user.id,user.name,sex,phonenum,sectorname from user,sector
+    where sector.sid=user.sid;
+  </select>
+  <select id="countSector" resultType="com.lcj.manage.model.Sector">
+    select sectorname ,count(user.sid)
+    amount from user,sector where user.sid=sector.sid and s_code=1 group by user.sid
+  </select>
+
+</mapper>

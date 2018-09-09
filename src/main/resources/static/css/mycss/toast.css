@@ -1,0 +1,18 @@
+.toast-body{
+    word-break: break-all;
+    padding: 8px;
+}
+.toast{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: auto;
+    height: auto;
+    box-shadow: -1px 4px 20px #888;
+
+    min-width: 180px;
+    max-width: 350px;
+    min-height: 80px;
+    z-index: 999999;
+    /*display: none;*/
+}

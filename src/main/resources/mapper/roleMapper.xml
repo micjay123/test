@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lcj.manage.dao.RoleMapper" >
+  <resultMap id="BaseResultMap" type="com.lcj.manage.model.Role" >
+    <id column="rid" property="id" jdbcType="INTEGER" />
+    <result column="rolename" property="r_name" jdbcType="VARCHAR" />
+    <result column="rdescription" property="r_description" jdbcType="VARCHAR" />
+    <result column="qid" property="q_id" jdbcType="INTEGER" />
+    <result column="r_code" property="r_code" jdbcType="INTEGER" />
+    </resultMap>
+
+  <resultMap id="queryRole2Right" type="com.lcj.manage.model.Role" >
+    <id column="rid" property="id" jdbcType="INTEGER" />
+    <result column="rolename" property="r_name" jdbcType="VARCHAR" />
+    <result column="rdescription" property="r_description" jdbcType="VARCHAR" />
+    <result column="qid" property="q_id" jdbcType="INTEGER" />
+    <result column="r_code" property="r_code" jdbcType="INTEGER" />
+    <collection property="right" ofType="com.lcj.manage.model.Right">
+      <id column="qid" property="id" jdbcType="INTEGER" />
+      <result column="qname" property="q_name" jdbcType="VARCHAR" />
+      <result column="qdescription" property="q_description" jdbcType="VARCHAR" />
+      <result column="r_code" property="r_code" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+
+  <insert id="insertRole" parameterType="com.lcj.manage.model.Role" >
+    insert into role (rolename, qid, rdescription
+    )
+    values (#{r_name},#{q_id},#{r_description}
+    )
+  </insert>
+
+  <select id="selectAllRole" resultMap="BaseResultMap">
+    select * from role where r_code=1;
+  </select>
+
+  <select id="selectAllRole2Right" resultMap="queryRole2Right">
+    select role.rid,rolename,rdescription,qname,role.qid,role.r_code
+    from role,u_right where role.qid=u_right.qid and role.r_code=1
+  </select>
+
+  <update id="delRole" parameterType="com.lcj.manage.model.Role">
+    update role set r_code=0 where rid = #{id}
+  </update>
+
+  <update id="updateRoleById" parameterType="com.lcj.manage.model.Role">
+    update role set rolename=#{r_name},rdescription=#{r_description},qid=#{q_id}
+    where rid = #{id}
+  </update>
+
+  <select id="selectRoleById" resultType="String" parameterType="INTEGER">
+    select rolename from role where rid=#{id}
+  </select>
+</mapper>
